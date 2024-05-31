@@ -1,0 +1,547 @@
+swagger: '2.0'
+info:
+  title: 'CT Project E-Commerce API'
+  description: 'An API to manage E-Commerce. This project was made by James Carlson as an assignment for Coding Temple.'
+  version: '1.0.0'
+host: '127.0.0.1:5000'
+schemes:
+  - 'http'
+consumes: 
+  - 'application/json'
+produces:
+  - 'application/json'
+paths: 
+  /login/:
+    post:
+      summary: "Token Endpoint"
+      description: "Simulates login. Endpoint for user authentication. Matching username/password must be entered."
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Matching username and password for login"
+          required: true
+          schema:
+            $ref: "#/definitions/TokenCredentials"
+      responses:
+        200:
+          description: "Login Successful"
+          schema:
+            $ref: "#/definitions/TokenResponse"
+          examples:
+            application/json:
+              status: "success"
+              messsage: "You have successfully authenticated yourself"
+              token: "eyJhbGciJkeMAK1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTY1Njk1ODUsImaJmMTcxNjU2NTk4NSwic3ViIjoxfQ.qcNLua5V9JHGNdkemandKdkWEUvgSWeuQBR2EMNl7Jo"
+        401:
+          description: "Unsuccessful login"
+          schema:
+            $ref: "#/definitions/TokenResponse"
+          examples:
+            application/json:
+              status: "error"
+              message: "Username and/or password is incorrect"
+  /customers/:
+    post:
+      summary: "Create a new customer"
+      description: "Will add a new customer to the database"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Create customer object"
+          required: true
+          schema:
+            $ref: "#/definitions/CustomerRequest"
+      responses:
+        201:
+          description: 'Customer Created'
+          schema:
+            $ref: "#/definitions/CustomerResponse"
+        400:
+          description: 'Username Taken'
+          examples:
+            application/json:
+              error: "Username is already taken. Please create a unique username."
+    get:
+      summary: "Get Customers Endpoint"
+      description: "Get all customer data from customer table"
+      parameters:
+        - in: query
+          name: page
+          type: "integer"
+          description: "Page of customer objects"
+          required: false
+        - in: query
+          name: per_page
+          type: "integer"
+          description: "Number of customer objects per page"
+          required: false
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/CustomerResponse"
+  /customers/{customer_id}:
+    get:
+      summary: "Get Customer Endpoint"
+      description: "Get one customer's data by ID"
+      parameters:
+        - name: customer_id
+          in: path
+          description: "ID of customer to fetch"
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            $ref: "#/definitions/CustomerResponse"
+    put:
+      summary: "Update Customer Endpoint"
+      description: "Update customer's data at ID"
+      parameters:
+        - name: customer_id
+          in: path
+          description: "ID of customer to update"
+        - in: "body"
+          name: "body"
+          description: "Update customer data with any field"
+          schema:
+            $ref: "#/definitions/CustomerRequest"
+      responses:
+        201:
+          description: "CREATED"
+          schema:
+            $ref: "#/definitions/CustomerResponse"
+    delete:
+      summary: "Delete Customer Endpoint"
+      description: "Delete customer at ID"
+      parameters:
+        - name: customer_id
+          in: path
+          description: "ID of customer to update"
+      responses:
+        201:
+          description: "CREATED"
+          examples:
+            application/json:
+              message: "Customer with ID 10 has been removed"
+              status: "success"
+  /products/:
+    post:
+      summary: "Create a new product"
+      description: "Will add a new product to the database"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Create product object"
+          required: true
+          schema:
+            $ref: "#/definitions/Product"
+      responses:
+        201:
+          description: 'Product Created'
+          schema:
+            $ref: "#/definitions/Product"
+    get:
+      summary: "Get Products Endpoint"
+      description: "Get all product data from product table"
+      parameters:
+        - in: query
+          name: page
+          type: "integer"
+          description: "Page of product objects"
+          required: false
+        - in: query
+          name: per_page
+          type: "integer"
+          description: "Number of product objects per page"
+          required: false
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+  /products/{product_id}:
+    get:
+      summary: "Get Product Endpoint"
+      description: "Get one product's data by ID"
+      parameters:
+        - name: product_id
+          in: path
+          description: "ID of product to fetch"
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            $ref: "#/definitions/Product"
+    put:
+      summary: "Update Product Endpoint"
+      description: "Update product's data at ID"
+      parameters:
+        - name: product_id
+          in: path
+          description: "ID of product to update"
+        - in: "body"
+          name: "body"
+          description: "Update product data with any field"
+          schema:
+            $ref: "#/definitions/Product"
+      responses:
+        201:
+          description: "CREATED"
+          schema:
+            $ref: "#/definitions/Product"
+    delete:
+      summary: "Delete Product Endpoint"
+      description: "Delete product at ID"
+      parameters:
+        - name: product_id
+          in: path
+          description: "ID of product to update"
+      responses:
+        201:
+          description: "CREATED"
+          examples:
+            application/json:
+              message: "Product with ID 10 has been removed"
+              status: "success"
+  /orders/:
+    get:
+      summary: "Get Orders Endpoint"
+      description: "Get all order data from order table"
+      parameters:
+        - in: query
+          name: page
+          type: "integer"
+          description: "Page of order objects"
+          required: false
+        - in: query
+          name: per_page
+          type: "integer"
+          description: "Number of order objects per page"
+          required: false
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+              $ref: "#/definitions/Order"
+  /orders/{order_id}:
+    get:
+      summary: "Get Order Endpoint"
+      description: "Get one order's data by ID"
+      parameters:
+        - name: order_id
+          in: path
+          description: "ID of order to fetch"
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            $ref: "#/definitions/Order"
+  /orders/track/{order_id}:
+    get:
+      summary: "Track Order Endpoint"
+      description: "Get status of order by ID"
+      parameters:
+        - name: order_id
+          in: path
+          description: "ID of order to fetch"
+      responses:
+        200:
+          description: 'Get Order Status'
+          examples:
+            application/json:
+              status: "Your order (ID 6) from 2024-05-22 was delivered on 2024-05-27!"
+        400:
+          description: 'Username Taken'
+          examples:
+            application/json:
+              error: "Order could not be found with ID 66"
+  /cart:
+    post:
+      summary: "Create Shopping Cart Endpoint"
+      description: "Creates a new shopping cart and sets it as the target for other shopping cart actions"
+      responses:
+        201:
+          description: 'Shopping Cart Created'
+          examples:
+            application/json:
+              success: "Shopping cart created! Add your products!"
+    get:
+      summary: "View Shopping Carts Endpoint"
+      description: "Get all open shopping carts"
+      parameters:
+        - in: query
+          name: page
+          type: "integer"
+          description: "Page of shopping cart objects"
+          required: false
+        - in: query
+          name: per_page
+          type: "integer"
+          description: "Number of shopping cart objects per page"
+          required: false
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ShoppingCart"
+  /cart/{cart_id}:
+    get:
+      summary: "Get Shopping Cart Endpoint"
+      description: "Get one shopping cart's data by ID"
+      parameters:
+        - name: cart_id
+          in: path
+          description: "ID of shopping cart to fetch"
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            $ref: "#/definitions/ShoppingCart"
+    put:
+      summary: "Set Active Cart Endpoint"
+      description: "Set shopping cart at ID to target cart for other endpoints"
+      parameters:
+        - name: cart_id
+          in: path
+          description: "ID of cart to target"
+      responses:
+        200:
+          description: "Successful Response"
+          schema:
+            $ref: "#/definitions/ShoppingCart"
+  /cart/add/{product_id}:
+    put:
+      summary: "Add Product to Cart Endpoint"
+      description: "Add product to target cart by product ID"
+      parameters:
+        - name: product_id
+          in: path
+          description: "ID of product to add to cart"
+      responses:
+        200:
+          description: "Successful Response"
+          examples:
+            application/json:
+              success: "Product added!"
+        400:
+          description: "Product Not in Stock"
+          examples:
+            application/json:
+              error: "Not enough products in stock"
+  /cart/remove/{product_id}:
+    put:
+      summary: "Remove Product from Cart Endpoint"
+      description: "Remove product from target cart by product ID"
+      parameters:
+        - name: product_id
+          in: path
+          description: "ID of product to remove from cart"
+      responses:
+        200:
+          description: "Successful Response"
+          examples:
+            application/json:
+              success: "Product removed!"
+        404:
+          description: "Product Not in Cart"
+          examples:
+            application/json:
+              error: "Product not in cart!"
+  /cart/update/{product_id}:
+    put:
+      summary: "Update Product Quantity Endpoint"
+      description: "Update product quantity for item in cart"
+      parameters:
+        - name: product_id
+          in: path
+          description: "ID of product to update in cart"
+        - in: "body"
+          name: "body"
+          description: "Set quantity to amount specified"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              quantity:
+                type: "integer"
+                description: "New quantity for products"
+                example: "3"
+      responses:
+        200:
+          description: "Successful Response"
+          examples:
+            application/json:
+              success: "Product quantity modified!"
+        404:
+          description: "Product Not Found"
+          examples:
+            application/json:
+              error: "Product not found"
+  /cart/empty:
+    put:
+      summary: "Empty Shopping Cart Endpoint"
+      description: "Empties shopping cart of all products"
+      responses:
+        200:
+          description: 'Shopping Cart Emptied'
+          examples:
+            application/json:
+              success: "Your cart is now empty."
+  /cart/checkout:
+    delete:
+      summary: "Checkout Endpoint"
+      description: "Checkout with active cart, copying data to a new Order, and deleting a cart"
+      responses:
+        200:
+          description: 'Checkout Success'
+          examples:
+            application/json:
+              success: "You have successfully placed an order!"
+
+  
+
+definitions: 
+  TokenCredentials:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+        description: "The username of the user"
+      password:
+        type: "string"
+        format: "password"
+        description: "The password associated with username"
+    required:
+      - "username"
+      - "password"
+  TokenResponse:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        description: "Status of the operation"
+      message:
+        type: "string"
+        description: "Message indicating the success or failure"
+      token:
+        type: "string"
+        description: "Authenticated token"
+  UnauthorizedError:
+    type: "object"
+    properties:
+      error:
+        type: "string"
+        description: "The description of the error"
+        example: "Invalid token. Please try again"
+  Customer:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "Customer's full name"
+        example: "James Carlson"
+      email:
+        type: "string"
+        description: "Customer's email address"
+        example: "jamesmbcarlson@gmail.com"
+      phone:
+        type: "string"
+        description: "Customer's phone number"
+        example: "(719)555-8556"
+      username:
+        type: "string"
+        description: "Customer's username"
+        example: "jimjamsupreme"
+  CustomerResponse:
+    allOf:
+      - $ref: '#/definitions/Customer'
+      - type:
+        properties:
+          id:
+            type: "integer"
+            description: "Customer's unique ID number"
+            example: "1"
+            readonly: true
+  CustomerRequest:
+    allOf:
+      - $ref: "#/definitions/Customer"
+      - type:
+        properties:
+          password:
+            type: "string"
+            description: "Customer's password"
+            example: "Password123!"
+  Product:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "Product's unique ID number"
+        example: "7"
+      name:
+        type: "string"
+        description: "Product name"
+        example: "Steam Deck"
+      price:
+        type: "float"
+        description: "Product price"
+        example: "649.99"
+      stock_quantity:
+        type: "integer"
+        description: "Number of products available"
+        example: "42"
+  Order:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "Order's unique ID number"
+        example: "42"
+      customer_id:
+        type: "integer"
+        description: "Associated customer's unique ID number"
+        example: "1"
+      products:
+        type: "array"
+        description: "List of ordered products"
+        items:
+          type: "object"
+          properties:
+            id:
+              type: "integer"
+              description: "Ordered product's unique ID number"
+              example: "7"
+  ShoppingCart:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "Cart's unique ID number"
+        example: "4"
+      customer_id:
+        type: "integer"
+        description: "Associated customer's unique ID number"
+        example: "1"
+      products:
+        type: "array"
+        description: "List of products in cart"
+        items:
+          type: "object"
+          properties:
+            id:
+              type: "integer"
+              description: "Product's unique ID number"
+              example: "7"
+
+      
+securityDefinitions:
+  bearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
